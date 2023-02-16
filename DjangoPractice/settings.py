@@ -32,7 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 CUSTOM_APPS = [
-    'users',
+    'products',
+    'users'
 ]
 
 SYSTEM_APPS = [
@@ -42,6 +43,7 @@ SYSTEM_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
