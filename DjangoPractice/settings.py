@@ -33,7 +33,8 @@ ALLOWED_HOSTS = []
 
 CUSTOM_APPS = [
     'products',
-    'users'
+    'article',
+    'common'
 ]
 
 SYSTEM_APPS = [
