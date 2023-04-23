@@ -1,4 +1,5 @@
 from django.db import models
+from common.models import CommonModel
 
 
 class Category(models.Model):
@@ -21,3 +22,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Option(CommonModel):
+    name = models.CharField
+    price = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField()

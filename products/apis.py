@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import *
+from .serializers import ProductSerializer, CustomProductSerializer
 from .pagination import *
 
 
@@ -23,3 +23,16 @@ class ProductsListAPI(generics.ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class ProductDynamicAPI(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = CustomProductSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['fields'] = ["id", "name", "category"]
+        kwargs['context'] = {
+            # 'request': self.request,
+            'category_fields': ["id"]
+        }
+        return super().get_serializer(*args, **kwargs)
