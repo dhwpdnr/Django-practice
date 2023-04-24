@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import ProductSerializer, CustomProductSerializer
+from .serializers import ProductSerializer, CustomProductSerializer, CustomOrderSerializer
 from .pagination import *
 
 
@@ -31,8 +31,26 @@ class ProductDynamicAPI(generics.ListAPIView):
 
     def get_serializer(self, *args, **kwargs):
         kwargs['fields'] = ["id", "name", "category"]
+
+        # kwargs['fields'] = ["id", "name", "category"]
+        # kwargs['context'] = {
+        #     'request': self.request,
+        #     'category_fields': ["name"],
+        #     "option_fields": ["name"]
+        # }
+        return super().get_serializer(*args, **kwargs)
+
+
+class OrderDynamicAPI(generics.ListAPIView):
+    queryset = Order.objects.all()
+    serializer_class = CustomOrderSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        kwargs['fields'] = ["id", "name", "product"]
         kwargs['context'] = {
-            # 'request': self.request,
-            'category_fields': ["id"]
+            'request': self.request,
+            'product_fields': ["name", "category", "option"],
+            "category_fields": ["name"],
+            "option_fields": ["name"]
         }
         return super().get_serializer(*args, **kwargs)
