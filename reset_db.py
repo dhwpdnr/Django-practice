@@ -1,6 +1,6 @@
 import os, sys
 import shutil
-from DjangoPractice import settings
+from config import settings
 
 reset_target_list = []
 
