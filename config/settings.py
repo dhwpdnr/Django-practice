@@ -34,7 +34,8 @@ ALLOWED_HOSTS = []
 CUSTOM_APPS = [
     'products',
     'article',
-    'common'
+    'common',
+    "anotate"
 ]
 
 SYSTEM_APPS = [
