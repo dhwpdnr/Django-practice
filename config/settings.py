@@ -36,6 +36,7 @@ CUSTOM_APPS = [
     'article',
     'common',
     "anotate"
+    "managertest"
 ]
 
 SYSTEM_APPS = [
