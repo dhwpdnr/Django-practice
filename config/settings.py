@@ -35,7 +35,7 @@ CUSTOM_APPS = [
     'products',
     'article',
     'common',
-    "anotate"
+    "anotate",
     "managertest"
 ]
 
