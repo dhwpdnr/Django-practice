@@ -6,7 +6,7 @@ class ActiveManager(models.Manager):
         return super().get_queryset().filter(active=True)
 
 
-class AbstractBaseManager(models.Model):
+class AbstractBase(models.Model):
     active_objects = ActiveManager()
     objects = models.Manager()
 
@@ -14,25 +14,21 @@ class AbstractBaseManager(models.Model):
         abstract = True
 
 
-class Article(models.Model):
+class Article(AbstractBase):
     """Article model Definition"""
     name = models.CharField(max_length=100)
     description = models.TextField()
     active = models.BooleanField(default=True)
-    active_objects = ActiveManager()
-    objects = models.Manager()
 
     def __str__(self):
         return self.name
 
 
-class Magazine(models.Model):
+class Magazine(AbstractBase):
     """Magazine Model Definition"""
     name = models.CharField(max_length=100)
     description = models.TextField()
     active = models.BooleanField(default=True)
-    active_objects = ActiveManager()
-    objects = models.Manager()
 
     def __str__(self):
         return self.name
