@@ -6,3 +6,16 @@ from .models import Person
 class PersonActiveAPI(generics.ListAPIView):
     serializer_class = PersonSerializer
     queryset = Person.active_people.all()
+
+
+class PersonAPI(generics.ListAPIView):
+    serializer_class = PersonSerializer
+    def get_queryset(self):
+        target = self.request.query_params.get("target", "")
+        if target == "author":
+            queryset = Person.people.author()
+        elif target == "editor":
+            queryset = Person.people.editor()
+        else:
+            queryset = Person.objects.all()
+        return queryset
