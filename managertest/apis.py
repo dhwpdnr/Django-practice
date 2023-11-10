@@ -5,7 +5,16 @@ from .models import Person
 
 class PersonActiveAPI(generics.ListAPIView):
     serializer_class = PersonSerializer
-    queryset = Person.active_people.all()
+    queryset = Person.active_people
+
+    def get_queryset(self):
+        queryset = self.queryset
+        target = self.request.query_params.get("target", "")
+        if target == "author":
+            queryset = queryset.author()
+        elif target == "editor":
+            queryset = queryset.editor()
+        return queryset
 
 
 class PersonAPI(generics.ListAPIView):
