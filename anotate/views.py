@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Product, OrderLog
 from django.db.models import F, Sum, Count
+from django.db.models.functions import TruncDate
+from django.db.models import Sum, F, DateField
 
 
 class AnnotateTestAPI(APIView):
@@ -25,3 +27,17 @@ class AnnotateTestAPI(APIView):
                 "product_cnt_list": product_cnt_list,
             }
         )
+
+
+class AggregateTestAPI(APIView):
+    def get(self, request):
+        order_logs = (
+            OrderLog.objects.annotate(
+                date=TruncDate("created", output_field=DateField())
+            )
+            .values("date")
+            .annotate(total_price=Sum(F("product__price")))
+            .order_by("date")
+        )
+
+        return Response(data=order_logs)
