@@ -31,7 +31,15 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-CUSTOM_APPS = ["products", "article", "common", "anotate", "managertest", "aggregation"]
+CUSTOM_APPS = [
+    "products",
+    "article",
+    "common",
+    "anotate",
+    "managertest",
+    "aggregation",
+    "testcode",
+]
 
 SYSTEM_APPS = [
     "django.contrib.admin",
