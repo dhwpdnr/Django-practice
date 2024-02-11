@@ -1,0 +1,59 @@
+2024-02-11 07:37:50,174 INFO Watching for file changes with StatReloader
+2024-02-11 07:37:54,759 WARNING Not Found: /
+2024-02-11 07:37:54,760 WARNING "GET / HTTP/1.1" 404 2701
+2024-02-11 07:37:54,835 WARNING Not Found: /apple-touch-icon-precomposed.png
+2024-02-11 07:37:54,836 WARNING "GET /apple-touch-icon-precomposed.png HTTP/1.1" 404 2815
+2024-02-11 07:37:54,858 WARNING Not Found: /apple-touch-icon.png
+2024-02-11 07:37:54,865 WARNING "GET /apple-touch-icon.png HTTP/1.1" 404 2779
+2024-02-11 07:37:54,879 WARNING Not Found: /favicon.ico
+2024-02-11 07:37:54,879 WARNING "GET /favicon.ico HTTP/1.1" 404 2752
+2024-02-11 07:38:02,258 WARNING Not Found: /swagger
+2024-02-11 07:38:02,259 WARNING "GET /swagger HTTP/1.1" 404 2740
+2024-02-11 07:38:40,928 WARNING Not Found: /swagger
+2024-02-11 07:38:40,929 WARNING "GET /swagger HTTP/1.1" 404 2740
+2024-02-11 07:39:01,945 WARNING Not Found: /swagger/
+2024-02-11 07:39:01,945 WARNING "GET /swagger/ HTTP/1.1" 404 2743
+2024-02-11 07:39:06,725 WARNING Not Found: /redoc/
+2024-02-11 07:39:06,726 WARNING "GET /redoc/ HTTP/1.1" 404 2737
+2024-02-11 07:39:57,735 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/config/urls.py changed, reloading.
+2024-02-11 07:39:58,099 INFO Watching for file changes with StatReloader
+2024-02-11 07:39:59,526 INFO "GET /redoc/ HTTP/1.1" 200 929
+2024-02-11 07:39:59,547 INFO "GET /static/drf-yasg/style.css HTTP/1.1" 200 1047
+2024-02-11 07:39:59,548 INFO "GET /static/drf-yasg/redoc-init.js HTTP/1.1" 200 2566
+2024-02-11 07:39:59,549 INFO "GET /static/drf-yasg/insQ.min.js HTTP/1.1" 200 2093
+2024-02-11 07:39:59,552 INFO "GET /static/drf-yasg/redoc/redoc.min.js HTTP/1.1" 200 998563
+2024-02-11 07:39:59,644 INFO "GET /static/drf-yasg/redoc/redoc-logo.png HTTP/1.1" 200 4969
+2024-02-11 07:39:59,674 ERROR Internal Server Error: /redoc/
+Traceback (most recent call last):
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/rest_framework/response.py", line 70, in rendered_content
+    ret = renderer.render(self.data, accepted_media_type, context)
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/drf_yasg/renderers.py", line 36, in render
+    return codec.encode(data)
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/drf_yasg/codecs.py", line 73, in encode
+    VALIDATORS[validator](copy.deepcopy(spec))
+  File "/Users/oje-ug/PycharmProjects/DjangoPractice/venv/lib/python3.10/site-packages/drf_yasg/codecs.py", line 29, in _validate_swagger_spec_validator
+    from swagger_spec_validator.common import SwaggerValidationError as SSVErr
+ModuleNotFoundError: No module named 'swagger_spec_validator'
+2024-02-11 07:39:59,675 ERROR "GET /redoc/?format=openapi HTTP/1.1" 500 100514
+2024-02-11 07:40:50,291 INFO Watching for file changes with StatReloader
+2024-02-11 07:40:51,967 INFO "GET /redoc/ HTTP/1.1" 200 929
+2024-02-11 07:40:52,252 INFO "GET /redoc/?format=openapi HTTP/1.1" 200 3885
+2024-02-11 07:41:47,844 WARNING Not Found: /
+2024-02-11 07:41:47,845 WARNING "GET / HTTP/1.1" 404 2679
+2024-02-11 07:41:51,532 INFO "GET /swagger HTTP/1.1" 301 0
+2024-02-11 07:41:51,547 INFO "GET /swagger/ HTTP/1.1" 200 2159
+2024-02-11 07:41:51,576 INFO "GET /static/drf-yasg/swagger-ui-init.js HTTP/1.1" 200 14964
+2024-02-11 07:41:51,578 INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui.css HTTP/1.1" 200 143858
+2024-02-11 07:41:51,578 INFO "GET /static/drf-yasg/immutable.min.js HTTP/1.1" 200 56904
+2024-02-11 07:41:51,581 INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-standalone-preset.js HTTP/1.1" 200 324275
+2024-02-11 07:41:51,582 INFO "GET /static/drf-yasg/swagger-ui-dist/swagger-ui-bundle.js HTTP/1.1" 200 1086481
+2024-02-11 07:41:51,727 INFO "GET /static/drf-yasg/swagger-ui-dist/favicon-32x32.png HTTP/1.1" 200 628
+2024-02-11 07:41:51,729 INFO "GET /swagger/?format=openapi HTTP/1.1" 200 3885
+2024-02-11 07:42:19,002 INFO "GET /redoc/ HTTP/1.1" 200 929
+2024-02-11 07:42:19,116 INFO "GET /redoc/?format=openapi HTTP/1.1" 200 3885
