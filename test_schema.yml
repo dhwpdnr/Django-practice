@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: API Documentation TEST
+  version: 1.0.0
+  description: Django TEST API
+paths:
+  /manager/person/active/list/:
+    get:
+      operationId: manager_person_active_list_list
+      tags:
+      - manager
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+          description: ''
+  /manager/person/list/:
+    get:
+      operationId: manager_person_list_list
+      tags:
+      - manager
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Person'
+          description: ''
+  /products/api/list/:
+    get:
+      operationId: products_api_list_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+  /products/api/list/dynamic/:
+    get:
+      operationId: products_api_list_dynamic_list
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomProduct'
+          description: ''
+  /products/order/api/list/dynamic/:
+    get:
+      operationId: products_order_api_list_dynamic_list
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomOrder'
+          description: ''
+components:
+  schemas:
+    CustomCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+      required:
+      - id
+      - name
+    CustomOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/CustomProduct'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 30
+      required:
+      - id
+      - name
+      - product
+    CustomProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category:
+          allOf:
+          - $ref: '#/components/schemas/CustomCategory'
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+      required:
+      - category
+      - id
+      - name
+    PaginatedProductList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 50
+        last_name:
+          type: string
+          maxLength: 50
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        active:
+          type: boolean
+      required:
+      - first_name
+      - id
+      - last_name
+      - role
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 200
+        price:
+          type: integer
+        category:
+          type: integer
+          nullable: true
+        option:
+          type: integer
+          nullable: true
+      required:
+      - id
+      - name
+      - price
+    RoleEnum:
+      enum:
+      - A
+      - E
+      type: string
+      description: |-
+        * `A` - Author
+        * `E` - Editor
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid

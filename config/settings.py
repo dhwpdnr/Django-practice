@@ -50,6 +50,7 @@ SYSTEM_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "drf_yasg",
+    "drf_spectacular",
 ]
 
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
@@ -81,6 +82,17 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "API Documentation TEST",
+    "DESCRIPTION": "Django TEST API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
 
 WSGI_APPLICATION = "config.wsgi.application"
 
