@@ -57,3 +57,49 @@ ModuleNotFoundError: No module named 'swagger_spec_validator'
 2024-02-11 07:41:51,729 INFO "GET /swagger/?format=openapi HTTP/1.1" 200 3885
 2024-02-11 07:42:19,002 INFO "GET /redoc/ HTTP/1.1" 200 929
 2024-02-11 07:42:19,116 INFO "GET /redoc/?format=openapi HTTP/1.1" 200 3885
+2024-02-21 11:34:48,489 INFO Watching for file changes with StatReloader
+2024-02-21 11:34:59,422 WARNING Not Found: /
+2024-02-21 11:34:59,422 WARNING "GET / HTTP/1.1" 404 2674
+2024-02-21 11:35:00,975 INFO "GET /admin/ HTTP/1.1" 302 0
+2024-02-21 11:35:01,004 INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2218
+2024-02-21 11:35:01,067 INFO "GET /static/admin/css/dark_mode.css HTTP/1.1" 200 796
+2024-02-21 11:35:01,068 INFO "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2619
+2024-02-21 11:35:01,068 INFO "GET /static/admin/css/login.css HTTP/1.1" 200 958
+2024-02-21 11:35:01,068 INFO "GET /static/admin/css/base.css HTTP/1.1" 200 20344
+2024-02-21 11:35:01,068 INFO "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3763
+2024-02-21 11:35:02,988 INFO "GET /admin/ HTTP/1.1" 302 0
+2024-02-21 11:35:03,001 INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2218
+2024-02-21 11:35:04,423 INFO "GET /admin/ HTTP/1.1" 302 0
+2024-02-21 11:35:04,437 INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2218
+2024-02-21 11:35:08,673 WARNING Not Found: /api/swa
+2024-02-21 11:35:08,673 WARNING "GET /api/swa HTTP/1.1" 404 2713
+2024-02-21 11:35:21,434 INFO "GET /api/schema/swagger-ui HTTP/1.1" 301 0
+2024-02-21 11:35:21,446 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:35:21,783 INFO "GET /api/schema/ HTTP/1.1" 200 11293
+2024-02-21 11:37:17,405 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/config/urls.py changed, reloading.
+2024-02-21 11:37:17,756 INFO Watching for file changes with StatReloader
+2024-02-21 11:37:58,795 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/article/apis.py changed, reloading.
+2024-02-21 11:37:59,127 INFO Watching for file changes with StatReloader
+2024-02-21 11:38:02,699 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:38:02,868 INFO "GET /api/schema/ HTTP/1.1" 200 18313
+2024-02-21 11:38:34,396 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/article/apis.py changed, reloading.
+2024-02-21 11:38:34,736 INFO Watching for file changes with StatReloader
+2024-02-21 11:38:35,901 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/article/apis.py changed, reloading.
+2024-02-21 11:38:36,138 INFO Watching for file changes with StatReloader
+2024-02-21 11:38:37,333 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:38:37,484 INFO "GET /api/schema/ HTTP/1.1" 200 18313
+2024-02-21 11:38:58,093 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/article/apis.py changed, reloading.
+2024-02-21 11:38:58,469 INFO Watching for file changes with StatReloader
+2024-02-21 11:39:00,683 INFO /Users/oje-ug/PycharmProjects/DjangoPractice/article/apis.py changed, reloading.
+2024-02-21 11:39:00,915 INFO Watching for file changes with StatReloader
+2024-02-21 11:39:01,608 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:39:01,696 INFO "GET /api/schema/ HTTP/1.1" 200 18343
+2024-02-21 11:39:10,464 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:39:10,607 INFO "GET /api/schema/ HTTP/1.1" 200 18343
+2024-02-21 11:39:12,568 INFO "GET /api/schema/swagger-ui/ HTTP/1.1" 200 4464
+2024-02-21 11:39:12,649 INFO "GET /api/schema/ HTTP/1.1" 200 18343
+2024-02-21 11:39:13,047 INFO "GET /admin/ HTTP/1.1" 302 0
+2024-02-21 11:39:13,078 INFO "GET /admin/login/?next=/admin/ HTTP/1.1" 200 2218
+2024-02-21 11:39:15,431 INFO "GET /api/schema/redoc HTTP/1.1" 301 0
+2024-02-21 11:39:15,442 INFO "GET /api/schema/redoc/ HTTP/1.1" 200 738
+2024-02-21 11:39:16,298 INFO "GET /api/schema/ HTTP/1.1" 200 8037

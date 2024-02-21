@@ -10,7 +10,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         request=ArticleCreateSerializer,
-        responses={201: ArticleSerializer},
+        tags=["Article", "Create"],
         examples=[
             OpenApiExample(
                 "Create a new Article",
@@ -27,7 +27,6 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         request=ArticleCreateSerializer,
-        responses={200: ArticleSerializer},
         examples=[
             OpenApiExample(
                 "Update an Article",
@@ -44,7 +43,6 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     @extend_schema(
         request=ArticleCreateSerializer,
-        responses={200: ArticleSerializer},
         examples=[
             OpenApiExample(
                 "Partial Update an Article",
