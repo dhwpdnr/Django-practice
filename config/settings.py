@@ -39,6 +39,7 @@ CUSTOM_APPS = [
     "managertest",
     "aggregation",
     "testcode",
+    "query_test",
 ]
 
 SYSTEM_APPS = [
