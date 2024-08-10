@@ -37,4 +37,5 @@ urlpatterns = [
         name="redoc",
     ),
     path("article/", include("article.urls")),
+    path("query/", include("query_test.urls")),
 ]
