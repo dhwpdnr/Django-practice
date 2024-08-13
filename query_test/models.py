@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class Media(models.Model):
+    product = models.ForeignKey("products.Product", on_delete=models.CASCADE)
+    url = models.URLField()
