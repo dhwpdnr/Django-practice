@@ -40,6 +40,7 @@ CUSTOM_APPS = [
     "aggregation",
     "testcode",
     "query_test",
+    "soft_delete",
 ]
 
 SYSTEM_APPS = [
