@@ -24,13 +24,20 @@
     ```bash
     pip install -r requirements.txt
     ```
+3. .env 생성:
+   <br>
+   Example
+    ```
+    SECRET_KEY=set_your_django_secret_key
+    DEBUG=TRUE
+    ```
 
-3. 마이그레이션 적용:
+4. 마이그레이션 적용:
     ```bash
     python manage.py migrate
     ```
 
-4. 로컬 서버 실행:
+5. 로컬 서버 실행:
     ```bash
     python manage.py runserver
     ```
