@@ -1,5 +1,5 @@
 from django.test import TestCase
-from soft_delete.models import SoftDelete
+from soft_delete.models import SoftDelete, Foo, Bar
 
 
 class SoftDeleteTestCase(TestCase):
@@ -63,3 +63,20 @@ class SoftDeleteTestCase(TestCase):
         # unique 제약 조건에 방해받지 않고 잘 삭제되는지 확인
         self.assertEqual(SoftDelete.objects.count(), 0)  # deleted=False인 객체는 0개
         print("Soft deleted successfully without unique constraint issues.")
+
+    def test_soft_delete_CASCADE(self):
+        """Soft Delete CASCADE 테스트"""
+        # 객체 생성
+        foo = Foo.objects.create(name="foo")
+        bar = Bar.objects.create(name="bar", foo=foo)
+        self.assertEqual(Foo.objects.count(), 1)
+        self.assertEqual(Bar.objects.count(), 1)
+
+        # foo 객체 soft delete
+        foo.delete()
+        bar.refresh_from_db()
+        self.assertEqual(foo.deleted, True)
+        self.assertEqual(bar.deleted, True)
+        self.assertEqual(Foo.objects.count(), 0)
+        self.assertEqual(Bar.objects.count(), 0)
+        print("Soft deleted foo and bar objects successfully with CASCADE.")

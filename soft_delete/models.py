@@ -44,3 +44,27 @@ class SoftDelete(models.Model):
 
     def hard_delete(self, using=None, keep_parents=False):
         super(SoftDelete, self).delete(using, keep_parents)
+
+
+class Foo(models.Model):
+    deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    name = models.CharField(max_length=255)
+
+    objects = SoftDeleteManager()
+    all_objects = AllObjectsManager()
+
+    def delete(self, using=None, keep_parents=False):
+        self.deleted = True
+        Bar.objects.filter(foo=self).delete()
+        self.save()
+
+
+class Bar(models.Model):
+    deleted = models.BooleanField(default=False)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    name = models.CharField(max_length=255)
+    foo = models.ForeignKey(Foo, on_delete=models.CASCADE)
+
+    objects = SoftDeleteManager()
+    all_objects = AllObjectsManager()
