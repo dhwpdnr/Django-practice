@@ -41,6 +41,7 @@ CUSTOM_APPS = [
     "testcode",
     "query_test",
     "soft_delete",
+    "testing",
 ]
 
 SYSTEM_APPS = [
