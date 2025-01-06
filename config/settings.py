@@ -43,6 +43,7 @@ CUSTOM_APPS = [
     "soft_delete",
     "testing",
     "request_test",
+    "throttle",
 ]
 
 SYSTEM_APPS = [
@@ -67,6 +68,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # 'config.middleware.RateLimitMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -87,8 +89,21 @@ TEMPLATES = [
     },
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "rate-limit-tests",
+    }
+}
+
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_THROTTLE_CLASSES": [
+        "config.throttle.IPBasedThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "ip_based": "1/min",
+    },
 }
 
 WSGI_APPLICATION = "config.wsgi.application"
