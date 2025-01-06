@@ -22,3 +22,52 @@ class ThrottleAPITest(TestCase):
             response.json(),
             {"detail": "Request was throttled. Expected available in 60 seconds."},
         )
+
+    def test_throttle_rate_limit(self):
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(
+            response.json(),
+            {"detail": "Request was throttled. Expected available in 5 seconds."},
+        )
+
+    def test_throttle_rate_limit_over_duration(self):
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(
+            response.json(),
+            {"detail": "Request was throttled. Expected available in 5 seconds."},
+        )
+
+        # 60초 이후
+        import time
+
+        time.sleep(5)
+
+        response = self.client.get("/throttle/rate_limit/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"message": "Success!"})
