@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 CUSTOM_APPS = [
+    "users",
     "products",
     "article",
     "common",
@@ -98,12 +99,12 @@ CACHES = {
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_THROTTLE_CLASSES": [
-        "config.throttle.IPBasedThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {
-        "ip_based": "1/min",
-    },
+    # "DEFAULT_THROTTLE_CLASSES": [
+    #     "config.throttle.IPBasedThrottle",
+    # ],
+    # "DEFAULT_THROTTLE_RATES": {
+    #     "ip_based": "1/min",
+    # },
 }
 
 WSGI_APPLICATION = "config.wsgi.application"
@@ -162,6 +163,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -172,6 +177,8 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = "users.User"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

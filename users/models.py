@@ -8,6 +8,10 @@ from .managers import CustomUserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    class GroupChoices(models.TextChoices):
+        BASIC = ("basic", "basic")
+        PREMIUM = ("premium", "premium")
+
     pkid = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     first_name = models.CharField(verbose_name=_("first name"), max_length=50)
@@ -19,6 +23,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
 
     date_joined = models.DateTimeField(default=timezone.now)
+
+    group = models.CharField(
+        max_length=50, default="basic", choices=GroupChoices.choices
+    )
 
     USERNAME_FIELD = "email"
 

@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 from rest_framework.exceptions import ValidationError
-from core_apps.users.serializers import UserSerializer, CustomRegisterSerializer
+from users.serializers import UserSerializer, CustomRegisterSerializer
 
 User = get_user_model()
 
