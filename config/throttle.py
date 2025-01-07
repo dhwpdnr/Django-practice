@@ -1,6 +1,58 @@
 from rest_framework.throttling import BaseThrottle
-import time
 from django.core.cache import cache
+import time
+from rest_framework.exceptions import Throttled
+
+
+class CustomThrottle(BaseThrottle):
+    default_rate_limit = 5  # 기본 요청 수
+    default_duration = 10  # 제한 시간 (초)
+
+    def allow_request(self, request, view):
+        ip = self.get_client_ip(request)
+        cache_key = f"rate_limit_{ip}"
+        current_time = time.time()
+
+        # 요청 기록 가져오기
+        request_timestamps = cache.get(cache_key, [])
+
+        # 유효한 요청만 필터링
+        request_timestamps = [
+            timestamp
+            for timestamp in request_timestamps
+            if current_time - timestamp < self.default_duration
+        ]
+
+        if len(request_timestamps) >= self.default_rate_limit:
+            self.throttle_timeout = self.default_duration - (
+                current_time - request_timestamps[-1]
+            )
+            self.raise_throttled_error(request)
+            return False
+
+        # 요청 기록 갱신
+        request_timestamps.append(current_time)
+        cache.set(cache_key, request_timestamps, timeout=self.default_duration)
+        return True
+
+    def raise_throttled_error(self, request):
+        """
+        요청 제한 초과 시 커스텀 Throttled 예외를 발생시킵니다.
+        """
+        detail = {
+            "error": "Too many requests",
+            "message": f"요청량 한도를 초과했습니다. {self.throttle_timeout:.1f}초 후에 다시 시도하세요.",
+        }
+        raise Throttled(detail=detail)
+
+    def get_client_ip(self, request):
+        """
+        클라이언트의 IP 주소를 가져옵니다.
+        """
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            return x_forwarded_for.split(",")[0]
+        return request.META.get("REMOTE_ADDR")
 
 
 class IPBasedThrottle(BaseThrottle):
@@ -50,8 +102,8 @@ class RateLimitThrottle(BaseThrottle):
             if current_time - timestamp < self.duration
         ]
 
+        # 요청 제한 초과
         if len(request_timestamps) >= self.rate_limit:
-            # 요청 제한 초과
             return False
 
         # 요청 기록 갱신
@@ -70,9 +122,8 @@ class RateLimitThrottle(BaseThrottle):
 
 
 class RoleBasedRateLimitThrottle(BaseThrottle):
-    # 기본 제한 값 (최대 요청 수 및 제한 시간)
-    default_rate_limit = 10  # 1분에 10개의 요청
-    default_duration = 60  # 제한 시간 60초
+    default_rate_limit = 10
+    default_duration = 60
 
     # 권한 그룹별 제한 설정
     rate_limits = {
@@ -119,8 +170,6 @@ class RoleBasedRateLimitThrottle(BaseThrottle):
         return True
 
     def get_user_role(self, request):
-        # 사용자 권한을 결정하는 로직 (여기선 예시로 작성)
-        print(request.user)
         if request.user.is_superuser:
             return "admin"
         elif request.user.group == "premium":
@@ -136,3 +185,54 @@ class RoleBasedRateLimitThrottle(BaseThrottle):
 
     def wait(self):
         return self.default_duration
+
+
+class CustomThrottle(BaseThrottle):
+    default_rate_limit = 5  # 기본 요청 수
+    default_duration = 10  # 제한 시간 (초)
+
+    def allow_request(self, request, view):
+        ip = self.get_client_ip(request)
+        cache_key = f"rate_limit_{ip}"
+        current_time = time.time()
+
+        # 요청 기록 가져오기
+        request_timestamps = cache.get(cache_key, [])
+
+        # 유효한 요청만 필터링
+        request_timestamps = [
+            timestamp
+            for timestamp in request_timestamps
+            if current_time - timestamp < self.default_duration
+        ]
+
+        if len(request_timestamps) >= self.default_rate_limit:
+            self.throttle_timeout = self.default_duration - (
+                current_time - request_timestamps[-1]
+            )
+            self.raise_throttled_error(request)
+            return False
+
+        # 요청 기록 갱신
+        request_timestamps.append(current_time)
+        cache.set(cache_key, request_timestamps, timeout=self.default_duration)
+        return True
+
+    def raise_throttled_error(self, request):
+        """
+        요청 제한 초과 시 커스텀 Throttled 예외를 발생
+        """
+        detail = {
+            "error": "Too many requests",
+            "message": f"요청량 한도를 초과했습니다. {self.throttle_timeout:.1f}초 후에 다시 시도하세요.",
+        }
+        raise Throttled(detail=detail)
+
+    def get_client_ip(self, request):
+        """
+        클라이언트의 IP 주소를 가져옴
+        """
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            return x_forwarded_for.split(",")[0]
+        return request.META.get("REMOTE_ADDR")

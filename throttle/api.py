@@ -4,6 +4,7 @@ from config.throttle import (
     IPBasedThrottle,
     RateLimitThrottle,
     RoleBasedRateLimitThrottle,
+    CustomThrottle,
 )
 
 
@@ -23,6 +24,13 @@ class ThrottleTestAPIRateLimit(generics.GenericAPIView):
 
 class ThrottleTestAPIRoleBasedRateLimit(generics.GenericAPIView):
     throttle_classes = [RoleBasedRateLimitThrottle]
+
+    def get(self, request):
+        return Response({"message": "Success!"})
+
+
+class ThrottleTestAPICustom(generics.GenericAPIView):
+    throttle_classes = [CustomThrottle]
 
     def get(self, request):
         return Response({"message": "Success!"})

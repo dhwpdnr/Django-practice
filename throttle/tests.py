@@ -101,3 +101,16 @@ class ThrottleAPITest(TestCase):
         response = self.client.get("/throttle/role_based_rate_limit/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"message": "Success!"})
+
+    def test_throttle_response_msg_custom(self):
+        for _ in range(5):
+            response = self.client.get("/throttle/custom/")
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.json(), {"message": "Success!"})
+
+        response = self.client.get("/throttle/custom/")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.json()["error"], "Too many requests")
+        self.assertEqual(
+            response.json()["message"], "요청량 한도를 초과했습니다. 10.0초 후에 다시 시도하세요."
+        )
