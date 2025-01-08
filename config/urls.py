@@ -40,4 +40,5 @@ urlpatterns = [
     path("query/", include("query_test.urls")),
     path("request/", include("request_test.urls")),
     path("throttle/", include("throttle.urls")),
+    path("sse/", include("sse.urls")),
 ]

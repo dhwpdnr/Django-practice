@@ -46,6 +46,7 @@ CUSTOM_APPS = [
     "request_test",
     "throttle",
     "webhook",
+    "sse",
 ]
 
 SYSTEM_APPS = [

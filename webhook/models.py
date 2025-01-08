@@ -1,5 +1,5 @@
 from django.db import models, transaction
-from utils import send_webhook
+from .utils import send_webhook
 
 
 class WebhookTestModel(models.Model):
