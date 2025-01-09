@@ -41,4 +41,5 @@ urlpatterns = [
     path("request/", include("request_test.urls")),
     path("throttle/", include("throttle.urls")),
     path("sse/", include("sse.urls")),
+    path("fluid/", include("fluid.urls")),
 ]

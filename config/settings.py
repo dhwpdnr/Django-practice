@@ -47,6 +47,7 @@ CUSTOM_APPS = [
     "throttle",
     "webhook",
     "sse",
+    "fluid",
 ]
 
 SYSTEM_APPS = [
