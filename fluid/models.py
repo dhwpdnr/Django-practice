@@ -40,3 +40,13 @@ class FieldMetadata(models.Model):
 
     def __str__(self):
         return f"{self.table.name} - {self.name}"
+
+
+class DynamicTableData(models.Model):
+    table = models.ForeignKey(
+        TableMetadata, on_delete=models.CASCADE, related_name="data"
+    )
+    data = models.JSONField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
