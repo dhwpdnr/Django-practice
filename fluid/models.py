@@ -50,3 +50,22 @@ class DynamicTableData(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class ArchivedDynamicTableData(models.Model):
+    """Archived dynamic table data."""
+
+    table = models.ForeignKey(
+        "TableMetadata", on_delete=models.CASCADE, related_name="archived_data"
+    )
+    data = models.JSONField()
+
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["created_at"]),
+        ]
+        verbose_name = "Archived Dynamic Table Data"
+        verbose_name_plural = "Archived Dynamic Table Data"
