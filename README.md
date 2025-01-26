@@ -44,7 +44,7 @@
 
 ## Notion 정리
 
-더 자세한 학습 내용은 [Notion](https://www.notion.so/Django-213282c789934d66845283a988da1f5c) , [Velog](https://velog.io/@dhwpdnr)에서 확인할 수 있습니다.
+더 자세한 학습 내용은 [Velog](https://velog.io/@dhwpdnr)에서 확인할 수 있습니다.
 
 ---
 
