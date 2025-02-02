@@ -48,6 +48,7 @@ CUSTOM_APPS = [
     "webhook",
     "sse",
     "fluid",
+    "todo",
 ]
 
 SYSTEM_APPS = [
