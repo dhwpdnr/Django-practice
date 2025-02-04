@@ -39,4 +39,7 @@ class QueryTestAPI(generics.GenericAPIView):
             .get(content="test")
         )
 
+        # prefetch_related 와 Prefetch 를 사용한 쿼리 최적화
+        product = Product.objects.prefetch_related(Prefetch("")).get(content="test")
+
         return Response({"message": "Query Test API"})

@@ -17,10 +17,10 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     price = models.IntegerField()
     category = models.ForeignKey(
-        "products.Category", related_name="products", on_delete=models.SET_NULL, null=True
-    )
-    option = models.ForeignKey(
-        "products.Option", related_name="products", on_delete=models.SET_NULL, null=True
+        "products.Category",
+        related_name="products",
+        on_delete=models.SET_NULL,
+        null=True,
     )
 
     def __str__(self):
@@ -31,6 +31,9 @@ class Option(CommonModel):
     """Option Model Definition"""
 
     name = models.CharField(max_length=30, default="", blank=True)
+    product = models.ForeignKey(
+        "products.Product", related_name="option", on_delete=models.CASCADE
+    )
     price = models.PositiveIntegerField()
     stock = models.PositiveIntegerField()
 
@@ -40,4 +43,4 @@ class Option(CommonModel):
 
 class Order(CommonModel):
     name = models.CharField(max_length=30)
-    product = models.ForeignKey("products.Product", related_name="order", on_delete=models.CASCADE)
+    product = models.ManyToManyField("products.Product", related_name="order")
