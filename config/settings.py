@@ -124,28 +124,89 @@ DATABASES = {
     }
 }
 
+import os
+
+LOG_DIR = BASE_DIR / "django"
+
+if not os.path.exists(LOG_DIR):
+    os.makedirs(LOG_DIR)
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    # 로그 포맷 설정
     "formatters": {
-        "timestamp": {
-            "format": "{asctime} {levelname} {message}",
+        "detailed": {
+            "format": "[{levelname}] {asctime} {module} | {message}",
+            "style": "{",
+        },
+        "json": {
+            "format": '{{"level": "{levelname}", "timestamp": "{asctime}", "module": "{module}", "message": "{message}"}}',
             "style": "{",
         },
     },
+    #  핸들러 설정
     "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "timestamp"},
-        "file": {
+        # 콘솔 출력
+        "console": {
             "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "detailed",
+        },
+        # 애플리케이션 로그
+        "app_file": {
+            "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "log.django",
-            "formatter": "timestamp",
+            "filename": os.path.join(LOG_DIR, "app.log"),
+            "formatter": "detailed",
+        },
+        # 요청(request) 로그
+        "request_file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "request.log"),
+            "formatter": "detailed",
+        },
+        # DB 쿼리 로그
+        "db_file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "db.log"),
+            "formatter": "detailed",
+        },
+        # 보안 로그
+        "security_file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "security.log"),
+            "formatter": "detailed",
         },
     },
+    # 로거 설정
     "loggers": {
+        # Django 기본 로거
         "django": {
-            "handlers": ["console", "file"],
+            "handlers": ["app_file", "console"],
             "level": "INFO",
+            "propagate": False,  # 중복 로깅 방지
+        },
+        # HTTP 요청 & 응답 로그
+        "django.request": {
+            "handlers": ["request_file"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        # DB 쿼리 로그
+        "django.db.backends": {
+            "handlers": ["db_file"],
+            "level": "DEBUG",
+            "propagate": False,
+        },
+        # 보안 관련 로그
+        "django.security": {
+            "handlers": ["security_file"],
+            "level": "WARNING",
+            "propagate": False,
         },
     },
 }
