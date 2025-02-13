@@ -157,29 +157,29 @@ LOGGING = {
         "app_file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "app.log"),
-            "formatter": "detailed",
+            "filename": os.path.join(LOG_DIR, "app_log.json"),
+            "formatter": "json",
         },
         # 요청(request) 로그
         "request_file": {
             "level": "WARNING",
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "request.log"),
-            "formatter": "detailed",
+            "filename": os.path.join(LOG_DIR, "request_log.json"),
+            "formatter": "json",
         },
         # DB 쿼리 로그
         "db_file": {
             "level": "WARNING",
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "db.log"),
-            "formatter": "detailed",
+            "filename": os.path.join(LOG_DIR, "db_log.json"),
+            "formatter": "json",
         },
         # 보안 로그
         "security_file": {
             "level": "WARNING",
             "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_DIR, "security.log"),
-            "formatter": "detailed",
+            "filename": os.path.join(LOG_DIR, "security_log.json"),
+            "formatter": "json",
         },
     },
     # 로거 설정
