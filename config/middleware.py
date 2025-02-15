@@ -1,6 +1,7 @@
 import time
 from django.core.cache import cache
 from django.http import JsonResponse
+from django.middleware.common import CommonMiddleware
 
 
 class RateLimitMiddleware:
@@ -32,3 +33,10 @@ class RateLimitMiddleware:
         if x_forwarded_for:
             return x_forwarded_for.split(",")[0]
         return request.META.get("REMOTE_ADDR")
+
+
+class CustomCommonMiddleware(CommonMiddleware):
+    def process_request(self, request):
+        # URL을 소문자로 변환
+        request.path = request.path.lower()
+        return super().process_request(request)
