@@ -1,7 +1,9 @@
 import time
+import logging
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.middleware.common import CommonMiddleware
+from django.utils.deprecation import MiddlewareMixin
 
 
 class RateLimitMiddleware:
@@ -40,3 +42,26 @@ class CustomCommonMiddleware(CommonMiddleware):
         # URL을 소문자로 변환
         request.path = request.path.lower()
         return super().process_request(request)
+
+
+# 로거 생성
+middleware_logger = logging.getLogger("middleware_logger")
+
+
+class RequestResponseLoggingMiddleware(MiddlewareMixin):
+    """모든 요청과 응답을 미들웨어 전용 로거로 기록"""
+
+    def process_request(self, request):
+        request.start_time = time.time()  # 요청 시작 시간 기록
+        middleware_logger.info(
+            f'{{"event": "request", "method": "{request.method}", "path": "{request.get_full_path()}", "client_ip": "{request.META.get("REMOTE_ADDR")}"}}'
+        )
+
+    def process_response(self, request, response):
+        elapsed_time = time.time() - getattr(
+            request, "start_time", time.time()
+        )  # 응답 소요 시간 계산
+        middleware_logger.info(
+            f'{{"event": "response", "method": "{request.method}", "path": "{request.get_full_path()}", "status": {response.status_code}, "elapsed_time": {elapsed_time:.2f}}}'
+        )
+        return response

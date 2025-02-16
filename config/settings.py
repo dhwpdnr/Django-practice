@@ -66,6 +66,7 @@ SYSTEM_APPS = [
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
+    "config.middleware.RequestResponseLoggingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "config.middleware.CustomCommonMiddleware",
@@ -181,6 +182,13 @@ LOGGING = {
             "filename": os.path.join(LOG_DIR, "security_log.json"),
             "formatter": "json",
         },
+        # 미들웨어 로그
+        "middleware_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(LOG_DIR, "middleware_log.json"),  # 미들웨어 전용 로그 파일
+            "formatter": "json",
+        },
     },
     # 로거 설정
     "loggers": {
@@ -206,6 +214,12 @@ LOGGING = {
         "django.security": {
             "handlers": ["security_file"],
             "level": "WARNING",
+            "propagate": False,
+        },
+        # 미들웨어 전용 로거
+        "middleware_logger": {
+            "handlers": ["middleware_file"],
+            "level": "INFO",
             "propagate": False,
         },
     },
