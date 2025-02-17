@@ -126,6 +126,7 @@ DATABASES = {
 }
 
 import os
+from config.logging_utils import CustomJsonFormatter, JsonArrayFileHandler
 
 LOG_DIR = BASE_DIR / "django"
 
@@ -141,9 +142,13 @@ LOGGING = {
             "format": "[{levelname}] {asctime} {module} | {message}",
             "style": "{",
         },
+        # "json": {
+        #     "format": '{{"level": "{levelname}", "timestamp": "{asctime}", "module": "{module}", "message": {message}}}',
+        #     "style": "{",
+        # },
         "json": {
-            "format": '{{"level": "{levelname}", "timestamp": "{asctime}", "module": "{module}", "message": "{message}"}}',
-            "style": "{",
+            "()": CustomJsonFormatter,  # 커스텀 JSON 포맷터 사용
+            "datefmt": "%Y-%m-%d %H:%M:%S",
         },
     },
     #  핸들러 설정
@@ -157,35 +162,35 @@ LOGGING = {
         # 애플리케이션 로그
         "app_file": {
             "level": "INFO",
-            "class": "logging.FileHandler",
+            "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "app_log.json"),
             "formatter": "json",
         },
         # 요청(request) 로그
         "request_file": {
             "level": "WARNING",
-            "class": "logging.FileHandler",
+            "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "request_log.json"),
             "formatter": "json",
         },
         # DB 쿼리 로그
         "db_file": {
             "level": "WARNING",
-            "class": "logging.FileHandler",
+            "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "db_log.json"),
             "formatter": "json",
         },
         # 보안 로그
         "security_file": {
             "level": "WARNING",
-            "class": "logging.FileHandler",
+            "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "security_log.json"),
             "formatter": "json",
         },
         # 미들웨어 로그
         "middleware_file": {
             "level": "INFO",
-            "class": "logging.FileHandler",
+            "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "middleware_log.json"),  # 미들웨어 전용 로그 파일
             "formatter": "json",
         },
