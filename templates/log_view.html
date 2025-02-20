@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그 모니터링</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        table {
+            width: 80%;
+            margin: auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .info {
+            background-color: #cce5ff;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+        }
+
+        .error {
+            background-color: #f8d7da;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>로그 모니터링</h1>
+
+<h2>로그 목록</h2>
+<table>
+    <thead>
+    <tr>
+        <th>레벨</th>
+        <th>타임스탬프</th>
+        <th>모듈</th>
+        <th>메시지</th>
+    </tr>
+    </thead>
+    <tbody id="logTableBody"></tbody>
+</table>
+
+<script>
+    function fetchLogs() {
+        fetch("/read_logs/")
+            .then(response => response.json())
+            .then(data => {
+                const logTableBody = document.getElementById("logTableBody");
+                logTableBody.innerHTML = ""; // 기존 로그 초기화
+
+                const logLevels = {}; // 로그 레벨별 개수 저장
+
+                data.reverse().forEach(log => { // 최신 로그가 위에 오도록 reverse()
+                    // 로그 색상 적용
+                    let rowClass = "";
+                    if (log.level === "INFO") rowClass = "info";
+                    else if (log.level === "WARNING") rowClass = "warning";
+                    else if (log.level === "ERROR") rowClass = "error";
+
+                    // 로그 테이블 추가
+                    const row = `<tr class="${rowClass}">
+                            <td>${log.level}</td>
+                            <td>${log.timestamp}</td>
+                            <td>${log.module}</td>
+                            <td>${log.message}</td>
+                        </tr>`;
+                    logTableBody.innerHTML += row;
+
+                    // 로그 레벨 개수 계산
+                    logLevels[log.level] = (logLevels[log.level] || 0) + 1;
+                });
+
+                // 차트 데이터 업데이트
+                updateChart(logLevels);
+            })
+            .catch(error => console.error("로그 데이터를 불러오는 중 오류 발생:", error));
+    }
+
+
+    // 페이지 로드 시 로그 데이터 가져오기
+    fetchLogs();
+
+    // 10초마다 로그 자동 업데이트
+    setInterval(fetchLogs, 10000);
+</script>
+</body>
+</html>
