@@ -3,16 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>로그 모니터링</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            padding: 20px;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .tab-container {
+            margin: 20px 0;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .tab-button.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        select {
+            padding: 8px;
+            margin: 0 10px;
         }
 
         table {
             width: 80%;
-            margin: auto;
+            margin: 20px auto;
             border-collapse: collapse;
         }
 
@@ -26,81 +53,239 @@
             background-color: #f2f2f2;
         }
 
-        .info {
-            background-color: #cce5ff;
+        .chart-container {
+            width: 800px;
+            height: 400px;
+            margin: 20px auto;
         }
 
-        .warning {
-            background-color: #fff3cd;
-        }
-
-        .error {
-            background-color: #f8d7da;
-        }
-
-        canvas {
-            margin-top: 20px;
-        }
+        .info { background-color: #e3f2fd; }
+        .warning { background-color: #fff3e0; }
+        .error { background-color: #ffebee; }
     </style>
 </head>
 <body>
-<h1>로그 모니터링</h1>
+    <h1>로그 모니터링</h1>
 
-<h2>로그 목록</h2>
-<table>
-    <thead>
-    <tr>
-        <th>레벨</th>
-        <th>타임스탬프</th>
-        <th>모듈</th>
-        <th>메시지</th>
-    </tr>
-    </thead>
-    <tbody id="logTableBody"></tbody>
-</table>
+    <div class="controls">
+        <div class="tab-container">
+            <button class="tab-button active" onclick="switchView('level')">로그 레벨 분포</button>
+            <button class="tab-button" onclick="switchView('time')">시간별 분석</button>
+        </div>
+        <div id="timeControls" style="display: none;">
+            <select id="timeUnit" onchange="updateTimeChart()">
+                <option value="hour">시간별</option>
+                <option value="day">일별</option>
+                <option value="week">주별</option>
+            </select>
+        </div>
+    </div>
 
-<script>
-    function fetchLogs() {
-        fetch("/read_logs/")
-            .then(response => response.json())
-            .then(data => {
-                const logTableBody = document.getElementById("logTableBody");
-                logTableBody.innerHTML = ""; // 기존 로그 초기화
+    <div class="chart-container">
+        <canvas id="logChart"></canvas>
+    </div>
 
-                const logLevels = {}; // 로그 레벨별 개수 저장
+    <h2>로그 목록</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>레벨</th>
+            <th>타임스탬프</th>
+            <th>모듈</th>
+            <th>메시지</th>
+        </tr>
+        </thead>
+        <tbody id="logTableBody"></tbody>
+    </table>
 
-                data.reverse().forEach(log => { // 최신 로그가 위에 오도록 reverse()
-                    // 로그 색상 적용
-                    let rowClass = "";
-                    if (log.level === "INFO") rowClass = "info";
-                    else if (log.level === "WARNING") rowClass = "warning";
-                    else if (log.level === "ERROR") rowClass = "error";
+    <script>
+        let logChart = null;
+        let currentView = 'level';
+        let logData = [];
 
-                    // 로그 테이블 추가
-                    const row = `<tr class="${rowClass}">
-                            <td>${log.level}</td>
-                            <td>${log.timestamp}</td>
-                            <td>${log.module}</td>
-                            <td>${log.message}</td>
-                        </tr>`;
-                    logTableBody.innerHTML += row;
+        function processTimeData(data, unit) {
+            const timeGroups = {};
 
-                    // 로그 레벨 개수 계산
+            data.forEach(log => {
+                const date = new Date(log.timestamp);
+                let key;
+
+                switch(unit) {
+                    case 'hour':
+                        key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours()}:00`;
+                        break;
+                    case 'day':
+                        key = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+                        break;
+                    case 'week':
+                        const weekNumber = Math.ceil((date.getDate() - date.getDay()) / 7);
+                        key = `Week ${weekNumber} of ${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                        break;
+                }
+
+                if (!timeGroups[key]) {
+                    timeGroups[key] = {
+                        'INFO': 0,
+                        'WARNING': 0,
+                        'ERROR': 0
+                    };
+                }
+                timeGroups[key][log.level]++;
+            });
+
+            return timeGroups;
+        }
+
+        function updateLevelChart(logLevels) {
+            const ctx = document.getElementById('logChart').getContext('2d');
+
+            const chartData = {
+                labels: Object.keys(logLevels),
+                datasets: [{
+                    label: '로그 레벨 분포',
+                    data: Object.values(logLevels),
+                    backgroundColor: [
+                        'rgba(33, 150, 243, 0.5)',
+                        'rgba(255, 152, 0, 0.5)',
+                        'rgba(244, 67, 54, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(33, 150, 243, 1)',
+                        'rgba(255, 152, 0, 1)',
+                        'rgba(244, 67, 54, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            updateChart(chartData, '로그 레벨 분포', 'bar');
+        }
+
+        function updateTimeChart() {
+            const timeUnit = document.getElementById('timeUnit').value;
+            const timeData = processTimeData(logData, timeUnit);
+
+            const labels = Object.keys(timeData);
+            const datasets = [
+                {
+                    label: 'INFO',
+                    data: labels.map(label => timeData[label]['INFO']),
+                    backgroundColor: 'rgba(33, 150, 243, 0.5)',
+                    borderColor: 'rgba(33, 150, 243, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'WARNING',
+                    data: labels.map(label => timeData[label]['WARNING']),
+                    backgroundColor: 'rgba(255, 152, 0, 0.5)',
+                    borderColor: 'rgba(255, 152, 0, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'ERROR',
+                    data: labels.map(label => timeData[label]['ERROR']),
+                    backgroundColor: 'rgba(244, 67, 54, 0.5)',
+                    borderColor: 'rgba(244, 67, 54, 1)',
+                    borderWidth: 1
+                }
+            ];
+
+            const chartData = { labels, datasets };
+            updateChart(chartData, `${timeUnit}별 로그 발생 횟수`, 'bar');
+        }
+
+        function updateChart(chartData, title, type) {
+            const ctx = document.getElementById('logChart').getContext('2d');
+
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: title,
+                        font: { size: 16 }
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            };
+
+            if (logChart) {
+                logChart.destroy();
+            }
+
+            logChart = new Chart(ctx, {
+                type: type,
+                data: chartData,
+                options: chartOptions
+            });
+        }
+
+        function switchView(view) {
+            currentView = view;
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('timeControls').style.display = view === 'time' ? 'block' : 'none';
+
+            if (view === 'level') {
+                const logLevels = {};
+                logData.forEach(log => {
                     logLevels[log.level] = (logLevels[log.level] || 0) + 1;
                 });
+                updateLevelChart(logLevels);
+            } else {
+                updateTimeChart();
+            }
+        }
 
-                // 차트 데이터 업데이트
-                updateChart(logLevels);
-            })
-            .catch(error => console.error("로그 데이터를 불러오는 중 오류 발생:", error));
-    }
+        function fetchLogs() {
+            fetch("/read_logs/")
+                .then(response => response.json())
+                .then(data => {
+                    logData = data;
+                    const logTableBody = document.getElementById("logTableBody");
+                    logTableBody.innerHTML = "";
 
+                    const logLevels = {};
 
-    // 페이지 로드 시 로그 데이터 가져오기
-    fetchLogs();
+                    data.reverse().forEach(log => {
+                        let rowClass = "";
+                        if (log.level === "INFO") rowClass = "info";
+                        else if (log.level === "WARNING") rowClass = "warning";
+                        else if (log.level === "ERROR") rowClass = "error";
 
-    // 10초마다 로그 자동 업데이트
-    setInterval(fetchLogs, 10000);
-</script>
+                        const row = `<tr class="${rowClass}">
+                                <td>${log.level}</td>
+                                <td>${log.timestamp}</td>
+                                <td>${log.module}</td>
+                                <td>${log.message}</td>
+                            </tr>`;
+                        logTableBody.innerHTML += row;
+
+                        logLevels[log.level] = (logLevels[log.level] || 0) + 1;
+                    });
+
+                    if (currentView === 'level') {
+                        updateLevelChart(logLevels);
+                    } else {
+                        updateTimeChart();
+                    }
+                })
+                .catch(error => console.error("로그 데이터를 불러오는 중 오류 발생:", error));
+        }
+
+        // 페이지 로드 시 로그 데이터 가져오기
+        fetchLogs();
+
+        // 10초마다 로그 자동 업데이트
+        setInterval(fetchLogs, 10000);
+    </script>
 </body>
 </html>
