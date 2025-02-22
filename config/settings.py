@@ -49,6 +49,7 @@ CUSTOM_APPS = [
     "sse",
     "fluid",
     "todo",
+    "log",
 ]
 
 SYSTEM_APPS = [
