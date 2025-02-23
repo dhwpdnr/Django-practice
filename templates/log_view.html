@@ -246,7 +246,7 @@
         }
 
         function fetchLogs() {
-            fetch("/read_logs/")
+            fetch("/log/read-json")
                 .then(response => response.json())
                 .then(data => {
                     logData = data;

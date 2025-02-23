@@ -67,15 +67,12 @@ SYSTEM_APPS = [
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS
 
 MIDDLEWARE = [
-    "config.middleware.RequestResponseLoggingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "config.middleware.CustomCommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # 'config.middleware.RateLimitMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -127,7 +124,7 @@ DATABASES = {
 }
 
 import os
-from config.logging_utils import CustomJsonFormatter, JsonArrayFileHandler
+from config.logging_utils import CustomJsonFormatter, ExcludeLogFilter
 
 LOG_DIR = BASE_DIR / "django"
 
@@ -143,13 +140,15 @@ LOGGING = {
             "format": "[{levelname}] {asctime} {module} | {message}",
             "style": "{",
         },
-        # "json": {
-        #     "format": '{{"level": "{levelname}", "timestamp": "{asctime}", "module": "{module}", "message": {message}}}',
-        #     "style": "{",
-        # },
         "json": {
             "()": CustomJsonFormatter,  # 커스텀 JSON 포맷터 사용
             "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    # 필터 설정
+    "filters": {
+        "exclude_log_requests": {
+            "()": ExcludeLogFilter,
         },
     },
     #  핸들러 설정
@@ -166,6 +165,7 @@ LOGGING = {
             "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "app_log.json"),
             "formatter": "json",
+            "filters": ["exclude_log_requests"],
         },
         # 요청(request) 로그
         "request_file": {
@@ -173,6 +173,7 @@ LOGGING = {
             "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "request_log.json"),
             "formatter": "json",
+            "filters": ["exclude_log_requests"],
         },
         # DB 쿼리 로그
         "db_file": {
@@ -180,6 +181,7 @@ LOGGING = {
             "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "db_log.json"),
             "formatter": "json",
+            "filters": ["exclude_log_requests"],
         },
         # 보안 로그
         "security_file": {
@@ -187,6 +189,7 @@ LOGGING = {
             "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "security_log.json"),
             "formatter": "json",
+            "filters": ["exclude_log_requests"],
         },
         # 미들웨어 로그
         "middleware_file": {
@@ -194,6 +197,7 @@ LOGGING = {
             "class": "config.logging_utils.JsonArrayFileHandler",
             "filename": os.path.join(LOG_DIR, "middleware_log.json"),  # 미들웨어 전용 로그 파일
             "formatter": "json",
+            "filters": ["exclude_log_requests"],
         },
     },
     # 로거 설정
@@ -203,30 +207,28 @@ LOGGING = {
             "handlers": ["app_file", "console"],
             "level": "INFO",
             "propagate": False,  # 중복 로깅 방지
+            "filters": ["exclude_log_requests"],
         },
         # HTTP 요청 & 응답 로그
         "django.request": {
             "handlers": ["request_file"],
             "level": "WARNING",
             "propagate": False,
+            "filters": ["exclude_log_requests"],
         },
         # DB 쿼리 로그
         "django.db.backends": {
             "handlers": ["db_file"],
             "level": "DEBUG",
             "propagate": False,
+            "filters": ["exclude_log_requests"],
         },
         # 보안 관련 로그
         "django.security": {
             "handlers": ["security_file"],
             "level": "WARNING",
             "propagate": False,
-        },
-        # 미들웨어 전용 로거
-        "middleware_logger": {
-            "handlers": ["middleware_file"],
-            "level": "INFO",
-            "propagate": False,
+            "filters": ["exclude_log_requests"],
         },
     },
 }

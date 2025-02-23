@@ -77,3 +77,13 @@ class CustomJsonFormatter(logging.Formatter):
                 log_record[field] = str(getattr(record, field))  # JSON 직렬화 가능하도록 변환
 
         return json.dumps(log_record, ensure_ascii=False)  # 한글 깨짐 방지
+
+
+class ExcludeLogFilter(logging.Filter):
+    """특정 URL 패턴(`/log/`)에 대한 로그를 모든 로거에서 무시하는 필터"""
+
+    def filter(self, record):
+        msg_list = list(record.getMessage().split(" "))
+
+        if msg_list[1].startswith("/log/"):
+            return False  # `/log/` 경로의 로그는 기록하지 않음
