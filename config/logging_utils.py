@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import socket
 
 
 class JsonArrayFileHandler(logging.FileHandler):
@@ -37,46 +38,32 @@ class CustomJsonFormatter(logging.Formatter):
     """App Log 를 JSON 형식으로 로그를 변환하는 커스텀 포맷터"""
 
     def format(self, record):
-        log_record = {
-            "level": record.levelname,
-            "timestamp": self.formatTime(record, self.datefmt),
-            "module": record.module,
-            "log_source": record.name,  # 로그 출처 (django.request, django.server 등)
-            "filename": record.filename,
-            "funcName": record.funcName,
-            "lineno": record.lineno,
-            "threadName": record.threadName,
-            "processName": record.processName,
-        }
+        log_record = {}
 
-        # msg와 args를 적용하여 최종 message 생성
+        for key, value in record.__dict__.items():
+            serialized_value = self._safe_serialize(value)
+            if serialized_value not in [None, "", "null"]:
+                log_record[key] = serialized_value
+
+        log_record["message"] = record.getMessage()
+
+        log_record["original_msg"] = record.msg
+        log_record["args"] = record.args
+
+        return json.dumps(log_record, ensure_ascii=False)
+
+    def _safe_serialize(self, value):
+        """JSON 직렬화가 불가능한 객체를 문자열로 변환"""
         try:
-            if record.args:
-                formatted_message = record.msg % record.args  # %s 포맷팅 적용
-            else:
-                formatted_message = record.msg
-        except TypeError:  # 혹시라도 args와 msg가 일치하지 않는 경우 대비
-            formatted_message = record.getMessage()
-
-        # 이중 따옴표를 제거하여 JSON 깨짐 방지
-        if isinstance(formatted_message, str):
-            formatted_message = formatted_message.strip('"')
-
-        log_record["message"] = formatted_message
-
-        # 원본 msg도 이중 따옴표 제거해서 저장
-        if isinstance(record.msg, str):
-            log_record["original_msg"] = record.msg.strip('"')
-        else:
-            log_record["original_msg"] = record.msg
-
-        # 추가적인 정보 저장
-        extra_fields = ["status_code", "request", "server_time"]
-        for field in extra_fields:
-            if hasattr(record, field):
-                log_record[field] = str(getattr(record, field))  # JSON 직렬화 가능하도록 변환
-
-        return json.dumps(log_record, ensure_ascii=False)  # 한글 깨짐 방지
+            json.dumps(value)  # JSON 직렬화 테스트
+            return value
+        except (TypeError, OverflowError):
+            if isinstance(value, socket.socket):
+                try:
+                    return f"{value.getsockname()} → {value.getpeername()}"
+                except OSError:
+                    return "Closed Socket"
+            return str(value)  # 변환이 불가능하면 문자열로 변환
 
 
 class ExcludeLogFilter(logging.Filter):
@@ -87,3 +74,5 @@ class ExcludeLogFilter(logging.Filter):
 
         if msg_list[1].startswith("/log/"):
             return False  # `/log/` 경로의 로그는 기록하지 않음
+
+        return True  # `/log/` 경로가 아닌 로그는 기록함
